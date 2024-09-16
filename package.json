@@ -17,10 +17,13 @@
     "@tauri-apps/api": "^2.0.0-rc.4",
     "bits-ui": "^0.21.13",
     "clsx": "^2.1.1",
+    "mode-watcher": "^0.4.1",
+    "svelte-sonner": "^0.3.28",
     "tailwind-merge": "^2.5.2",
     "tailwind-variants": "^0.2.1"
   },
   "devDependencies": {
+    "@svelte-put/shortcut": "^3.1.1",
     "@sveltejs/adapter-static": "^3.0.4",
     "@sveltejs/kit": "^2.5.27",
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
