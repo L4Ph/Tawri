@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "bun run build && wrangler pages deploy",
+    "deploy": "bun run build && bunx wrangler pages deploy",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "tauri": "tauri"
@@ -20,6 +20,7 @@
     "bits-ui": "^0.21.13",
     "clsx": "^2.1.1",
     "mode-watcher": "^0.4.1",
+    "svelte-file-dropzone": "^2.0.8",
     "svelte-sonner": "^0.3.28",
     "tailwind-merge": "^2.5.2",
     "tailwind-variants": "^0.2.1"

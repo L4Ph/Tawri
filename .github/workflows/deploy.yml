@@ -1,0 +1,37 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/**
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'main' && 'Production' || 'Preview' }}
+      url: ${{ steps.deployment_url.outputs.DEPLOYMENT_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: install deps
+        run: rm -rf node_modules && bun install --ignore-scripts --frozen-lockfile
+      - name: build
+        run: bun run build
+      - name: deploy
+        id: cloudflare-wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          packageManager: bun
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy --branch ${{ github.ref_name == 'main' && 'main' || 'preview' }}
+      - name: Get deployment url
+        id: deployment_url
+        run: echo "DEPLOYMENT_URL=${{ steps.cloudflare-wrangler.outputs.deployment-url }}" >> $GITHUB_ENV
