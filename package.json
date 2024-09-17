@@ -17,6 +17,7 @@
     "@fontsource-variable/m-plus-2": "^5.1.0",
     "@l4ph/web-novel-parser": "npm:@jsr/l4ph__web-novel-parser",
     "@tauri-apps/api": "^2.0.0-rc.4",
+    "@tauri-apps/plugin-fs": "^2.0.0-rc.2",
     "bits-ui": "^0.21.13",
     "clsx": "^2.1.1",
     "mode-watcher": "^0.4.1",
