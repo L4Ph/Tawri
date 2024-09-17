@@ -1,8 +1,8 @@
 <script lang="ts">
-    import "../app.pcss";
-    import { Toaster } from "$lib/components/ui/sonner";
-  import Sonner from "@/components/ui/sonner/sonner.svelte";
+  import "../app.css";
+  import { Toaster } from "$lib/components/ui/sonner";
+  import '@fontsource-variable/m-plus-2';
 </script>
 
-<Sonner />
+<Toaster />
 <slot />

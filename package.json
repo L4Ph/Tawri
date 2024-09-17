@@ -14,6 +14,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@fontsource-variable/m-plus-2": "^5.1.0",
     "@l4ph/web-novel-parser": "npm:@jsr/l4ph__web-novel-parser",
     "@tauri-apps/api": "^2.0.0-rc.4",
     "bits-ui": "^0.21.13",
