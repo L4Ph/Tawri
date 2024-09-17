@@ -1,9 +1,9 @@
 <script lang="ts">
   import Textarea from "$lib/components/ui/textarea/textarea.svelte";
   import { parseNarouNovel } from "@l4ph/web-novel-parser";
-  import Dropzone from "svelte-file-dropzone";
   import { shortcut, type ShortcutEventDetail } from "@svelte-put/shortcut";
-  import { insertRubyToTextarea, insertEmphasisToTextarea } from "./shortcuts";
+  import { insertRubyToTextarea} from "./insert-ruby-to-textarea";
+  import { insertEmphasisToTextarea } from "./insert-emphasis-to-textarea"
 
   let inputText = '';
   let preview = '';
@@ -15,7 +15,7 @@
 <svelte:window
   use:shortcut={{
     trigger: [
-      { key: 'i', modifier: 'ctrl', callback: () => insertRubyToTextarea(textarea, inputText) },
+      { key: 'i', modifier: 'ctrl', callback: () => inputText = insertRubyToTextarea(textarea, inputText) || inputText },
       { key: 'b', modifier: 'ctrl', callback: insertEmphasisToTextarea },
     ],
   }}
