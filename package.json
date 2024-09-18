@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@svelte-put/shortcut": "^3.1.1",
-    "@sveltejs/adapter-static": "^3.0.4",
+    "@sveltejs/adapter-static": "^3.0.5",
     "@sveltejs/kit": "^2.5.27",
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@tailwindcss/typography": "^0.5.15",
