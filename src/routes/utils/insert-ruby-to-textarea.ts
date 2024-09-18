@@ -1,4 +1,4 @@
-import { isTauriApp } from "$lib/is-tauri-app";
+import { isTauriApp } from "./is-tauri-app";
 import type { Textarea } from "@/components/ui/textarea";
 
 export function insertRubyToTextarea(textarea: Textarea, inputText: string): string | null {

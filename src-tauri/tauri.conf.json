@@ -1,7 +1,7 @@
 {
-  "productName": "narrow",
+  "productName": "tawri",
   "version": "0.1.0",
-  "identifier": "moe.l4ph.narrow",
+  "identifier": "moe.l4ph.tawri",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "Narrow-Web小説エディタ",
+        "title": "Tawri-Web小説エディタ",
         "width": 800,
         "height": 600
       }
