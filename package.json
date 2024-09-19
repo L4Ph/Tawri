@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@fontsource-variable/m-plus-2": "^5.1.0",
-    "@l4ph/web-novel-parser": "npm:@jsr/l4ph__web-novel-parser",
+    "@l4ph/web-novel-parser": "npm:@jsr/l4ph__web-novel-parser@0.1.1",
     "@macfja/svelte-persistent-store": "^2.4.1",
     "@tauri-apps/api": "^2.0.0-rc.4",
     "@tauri-apps/plugin-fs": "^2.0.0-rc.2",
@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "lucide-svelte": "^0.441.0",
     "mode-watcher": "^0.4.1",
+    "svelte-codemirror-editor": "^1.4.1",
     "svelte-file-dropzone": "^2.0.8",
     "svelte-sonner": "^0.3.28",
     "tailwind-merge": "^2.5.2",
