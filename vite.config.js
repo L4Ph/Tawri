@@ -35,5 +35,5 @@ export default defineConfig(async () => ({
     alias: {
       '$lib': fileURLToPath(new URL('./src/lib', import.meta.url)),
     },
-  },
+  }
 }));

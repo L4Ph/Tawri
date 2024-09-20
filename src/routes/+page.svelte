@@ -14,6 +14,12 @@
   import { readTextFile } from "./utils/file-render";
   import { FilePen } from 'lucide-svelte';
   import { FilePlus2 } from 'lucide-svelte';
+  import { Separator } from "@/components/ui/separator";
+  import { generateCompressedNovelUrl } from "./utils/generate-compressed-novel-url";
+  import { toast } from "svelte-sonner";
+  import { onMount } from "svelte";
+  import * as ContextMenu from "$lib/components/ui/context-menu";
+  import { Label } from "bits-ui";
 
   let inputText:PersistentStore<string> = persist(writable(""), createLocalStorage(), "inputText")
   let preview: string = "";
@@ -26,6 +32,11 @@
       inputText.set(text);
     });
   }
+
+  function CopyUrlToClipboard(inputText: string) {
+    const url = generateCompressedNovelUrl(inputText);
+    navigator.clipboard.writeText(url);
+  }
   
   $: preview = parseNarouNovel($inputText);
 </script>
@@ -33,11 +44,22 @@
 <svelte:window
   use:shortcut={{
     trigger: [
-      { key: 'i', modifier: 'ctrl', callback: () => {
-        const updatedText = insertRubyToTextarea(textarea, $inputText) || $inputText;
-        inputText.set(updatedText);}
+      { 
+        key: 'i', 
+        modifier: 'ctrl', 
+        callback: () => {
+          const updatedText = insertRubyToTextarea(textarea, $inputText) || $inputText;
+          inputText.set(updatedText);
+        }
       },
-      { key: 'b', modifier: 'ctrl', callback: insertEmphasisToTextarea },
+      { 
+        key: 'b', 
+        modifier: 'ctrl', 
+        callback: () => {
+          const updatedText = insertEmphasisToTextarea(textarea, $inputText) || $inputText;
+          inputText.set(updatedText);
+        }
+      },
     ],
   }}
 />
@@ -78,9 +100,29 @@
         />
       </ScrollArea>
     </div>
-    <div class="border-border border-r"></div>
-    <div class="w-1/2 p-4 overflow-auto hidden-scrollbar">
-      {@html preview}
+    <Separator orientation="vertical" />
+    <div class="w-1/2 h-full p-4 overflow-auto hidden-scrollbar">
+      <ContextMenu.Root>
+        <ContextMenu.Trigger class="h-full">
+          {@html preview}
+        </ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item on:click={() => {CopyUrlToClipboard($inputText)} }>URLをコピー</ContextMenu.Item>
+          <ContextMenu.Item on:click={() => {toast("未実装です。")} }>小説本文をコピー</ContextMenu.Item>
+          <ContextMenu.Label>
+            ルビを振る
+            <ContextMenu.Shortcut>
+              <kbd class="kbd-key">Ctrl</kbd><kbd class="kbd-key">i</kbd>
+            </ContextMenu.Shortcut>
+          </ContextMenu.Label>
+          <ContextMenu.Label>
+            傍点を振る
+            <ContextMenu.Shortcut>
+              <kbd class="kbd-key">Ctrl</kbd><kbd class="kbd-key">b</kbd>
+            </ContextMenu.Shortcut>
+          </ContextMenu.Label>
+        </ContextMenu.Content>
+      </ContextMenu.Root>
     </div>
   </div>
 </main>
