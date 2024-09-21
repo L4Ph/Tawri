@@ -5,5 +5,5 @@ import { get } from 'svelte/store';
 
 export function generateCompressedNovelUrl(text: string): string {
   const compressedText = compressToEncodedURIComponent(text);
-  return `${get(page).url.origin}?novelText=${compressedText}`;
+  return `${get(page).url.origin}?novel=${compressedText}`;
 }

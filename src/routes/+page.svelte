@@ -10,22 +10,29 @@
   import { writable } from "svelte/store"
   import CodeMirror from "svelte-codemirror-editor"
   import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
-  import ScrollAreaScrollbar from "@/components/ui/scroll-area/scroll-area-scrollbar.svelte";
   import { readTextFile } from "./utils/file-render";
   import { FilePen } from 'lucide-svelte';
   import { FilePlus2 } from 'lucide-svelte';
   import { Separator } from "@/components/ui/separator";
   import { generateCompressedNovelUrl } from "./utils/generate-compressed-novel-url";
   import { toast } from "svelte-sonner";
-  import { onMount } from "svelte";
   import * as ContextMenu from "$lib/components/ui/context-menu";
-  import { Label } from "bits-ui";
+  import { page } from "$app/stores";
+  import { generateSearchParamsToText } from "./utils/generate-search-params-to-text";
 
   let inputText:PersistentStore<string> = persist(writable(""), createLocalStorage(), "inputText")
   let preview: string = "";
   let textarea: Textarea;
   let open:boolean = true;
   let fileInput: HTMLInputElement;
+
+  let urlSearchParams = $page.url.searchParams;
+  if(urlSearchParams) {
+    const result = generateSearchParamsToText(urlSearchParams);
+    if(result) {
+      inputText.set(result)
+    }
+  }
 
   function handleFileChange(event: Event) {
     readTextFile(event, (text: string) => {
