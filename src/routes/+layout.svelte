@@ -11,3 +11,9 @@ import { page } from "$app/stores";
 
 <Toaster />
 <slot />
+
+<style>
+  :global(body) {
+    font-family: "M PLUS 2 Variable", var(--font-sans);
+  }
+</style>

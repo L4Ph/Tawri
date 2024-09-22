@@ -14,10 +14,8 @@ export function insertRubyToTextarea(
 		(textarea as HTMLTextAreaElement).selectionEnd ?? undefined;
 
 	if (selectionStart === undefined || selectionEnd === undefined) {
-		return null; // 何かしらの対応をここで追加
+		return null;
 	}
 
-	return (
-		inputText.slice(0, selectionStart) + "|《》" + inputText.slice(selectionEnd)
-	);
+	return `${inputText.slice(0, selectionStart)}|《》${inputText.slice(selectionEnd)}`;
 }
