@@ -27,6 +27,7 @@ import { isTauriApp } from "./utils/is-tauri-app";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { listen } from "@tauri-apps/api/event";
 import { readTextFileOnTauri } from "./utils/read-text-file-on-tauri";
+import { writeTextFileOnTauri } from "./utils/write-text-file-on-tauri";
 
 let inputText: PersistentStore<string> = persist(
 	writable(""),
@@ -37,6 +38,7 @@ let preview = "";
 let textarea: Textarea;
 let open = true;
 let fileInput: HTMLInputElement;
+let textFilePath = writable("");
 
 let urlSearchParams = $page.url.searchParams;
 if (urlSearchParams) {
@@ -72,7 +74,21 @@ if (isTauriApp()) {
 					},
 				],
 			});
-			readTextFileOnTauri(filePath);
+			if (filePath) {
+				$textFilePath = filePath;
+			}
+			const text = await readTextFileOnTauri(filePath);
+			if (text !== undefined) {
+				inputText.set(text);
+			}
+		} catch (error) {
+			console.error("エラーが発生しました:", error);
+		}
+	});
+
+	listen("save_file", async () => {
+		try {
+			writeTextFileOnTauri($textFilePath, $inputText);
 		} catch (error) {
 			console.error("エラーが発生しました:", error);
 		}
