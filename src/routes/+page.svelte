@@ -6,11 +6,6 @@ import { insertRubyToTextarea } from "./utils/insert-ruby-to-textarea";
 import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea";
 import * as Dialog from "$lib/components/ui/dialog";
 import Button from "@/components/ui/button/button.svelte";
-import {
-	persist,
-	type PersistentStore,
-	createLocalStorage,
-} from "@macfja/svelte-persistent-store";
 import { writable } from "svelte/store";
 import CodeMirror from "svelte-codemirror-editor";
 import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
@@ -29,28 +24,27 @@ import { listen } from "@tauri-apps/api/event";
 import { readTextFileOnTauri } from "./utils/read-text-file-on-tauri";
 import { writeTextFileOnTauri } from "./utils/write-text-file-on-tauri";
 
-let inputText: PersistentStore<string> = persist(
-	writable(""),
-	createLocalStorage(),
-	"inputText",
-);
-let preview = "";
+let inputText = $state("");
 let textarea: Textarea;
-let open = true;
-let fileInput: HTMLInputElement;
-let textFilePath = writable("");
+let open = $state(true);
+let fileInput = $state<HTMLInputElement | null>(null);
+let textFilePath = $state("");
+let preview = $derived.by(() => {
+	const parsedHtml = parseNarouNovel(inputText);
+	return parsedHtml;
+});
 
 let urlSearchParams = $page.url.searchParams;
 if (urlSearchParams) {
 	const result = generateSearchParamsToText(urlSearchParams);
 	if (result) {
-		inputText.set(result);
+		inputText = result;
 	}
 }
 
 function handleFileChange(event: Event) {
 	readTextFileOnBrowser(event, (text: string) => {
-		inputText.set(text);
+		inputText = text;
 	});
 }
 
@@ -58,8 +52,6 @@ function CopyUrlToClipboard(inputText: string) {
 	const url = generateCompressedNovelUrl(inputText);
 	navigator.clipboard.writeText(url);
 }
-
-$: preview = parseNarouNovel($inputText);
 
 if (isTauriApp()) {
 	listen("open_file", async () => {
@@ -75,11 +67,11 @@ if (isTauriApp()) {
 				],
 			});
 			if (filePath) {
-				$textFilePath = filePath;
+				textFilePath = filePath;
 			}
 			const text = await readTextFileOnTauri(filePath);
 			if (text !== undefined) {
-				inputText.set(text);
+				inputText = text;
 			}
 		} catch (error) {
 			console.error("エラーが発生しました:", error);
@@ -88,7 +80,7 @@ if (isTauriApp()) {
 
 	listen("save_file", async () => {
 		try {
-			writeTextFileOnTauri($textFilePath, $inputText);
+			writeTextFileOnTauri(textFilePath, inputText);
 		} catch (error) {
 			console.error("エラーが発生しました:", error);
 		}
@@ -103,16 +95,16 @@ if (isTauriApp()) {
         key: 'i', 
         modifier: 'ctrl', 
         callback: () => {
-          const updatedText = insertRubyToTextarea(textarea, $inputText) || $inputText;
-          inputText.set(updatedText);
+          const updatedText = insertRubyToTextarea(textarea, inputText) || inputText;
+          inputText = updatedText;
         }
       },
       { 
         key: 'b', 
         modifier: 'ctrl', 
         callback: () => {
-          const updatedText = insertEmphasisToTextarea(textarea, $inputText) || $inputText;
-          inputText.set(updatedText);
+          const updatedText = insertEmphasisToTextarea(textarea, inputText) || inputText;
+          inputText = updatedText;
         }
       },
     ],
@@ -120,7 +112,7 @@ if (isTauriApp()) {
 />
 
 <main class="h-screen">
-  {#if ($inputText === "" || !inputText) && !isTauriApp() }
+  {#if (inputText === "" || !inputText) && !isTauriApp() }
     <Dialog.Root bind:open>
       <Dialog.Content>
         <Dialog.Header>
@@ -130,11 +122,11 @@ if (isTauriApp()) {
             <p><kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">i</kbd>でルビ / <kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">b</kbd>で傍点が入力できます。</p>
           </Dialog.Description>
         </Dialog.Header>
-        <Button on:click={() => open = false}><FilePlus2 class="mr-2" />新しく書く</Button>
-        <Button on:click={() => fileInput.click()}>
+        <Button onclick={() => open = false}><FilePlus2 class="mr-2" />新しく書く</Button>
+        <Button onclick={() => fileInput?.click()}>
           <FilePen class="mr-2" />
           ファイルを開く
-          <input type="file" accept=".txt" class="hidden" bind:this={fileInput} on:change={handleFileChange} />
+          <input type="file" accept=".txt" class="hidden" bind:this={fileInput} onchange={handleFileChange} />
         </Button>
       </Dialog.Content>
     </Dialog.Root>
@@ -143,7 +135,7 @@ if (isTauriApp()) {
     <div class="w-1/2 p-4 flex flex-col">
       <ScrollArea>
         <CodeMirror
-          bind:value={$inputText} 
+          bind:value={inputText} 
           styles={{
             "&": {
               width: "100%",
@@ -162,8 +154,8 @@ if (isTauriApp()) {
           {@html preview}
         </ContextMenu.Trigger>
         <ContextMenu.Content>
-          <ContextMenu.Item on:click={() => {CopyUrlToClipboard($inputText)} }>URLをコピー</ContextMenu.Item>
-          <ContextMenu.Item on:click={() => {toast("未実装です。")} }>小説本文をコピー</ContextMenu.Item>
+          <ContextMenu.Item onclick={() => {CopyUrlToClipboard(inputText)} }>URLをコピー</ContextMenu.Item>
+          <ContextMenu.Item onclick={() => {toast("未実装です。")} }>小説本文をコピー</ContextMenu.Item>
           <ContextMenu.Label>
             ルビを振る
             <ContextMenu.Shortcut>
