@@ -17,7 +17,8 @@ export async function readTextFileOnTauri(
 		console.log("テキストが空または取得できませんでした");
 		return undefined;
 	} catch (error) {
-		console.error("ファイルの読み込み中にエラーが発生しました:", error);
+		console.error(`ファイル '${filePath}' の読み込み中にエラーが発生しました:`, error);
 		return undefined;
+	}
 	}
 }
