@@ -1,51 +1,83 @@
 <script lang="ts">
-  import Textarea from "$lib/components/ui/textarea/textarea.svelte";
-  import { parseNarouNovel } from "@l4ph/web-novel-parser";
-  import { shortcut, type ShortcutEventDetail } from "@svelte-put/shortcut";
-  import { insertRubyToTextarea} from "./utils/insert-ruby-to-textarea";
-  import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea"
-  import * as Dialog from "$lib/components/ui/dialog";
-  import Button from "@/components/ui/button/button.svelte";
-  import { persist, type PersistentStore, createLocalStorage } from "@macfja/svelte-persistent-store"
-  import { writable } from "svelte/store"
-  import CodeMirror from "svelte-codemirror-editor"
-  import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
-  import { readTextFile } from "./utils/file-render";
-  import { FilePen } from 'lucide-svelte';
-  import { FilePlus2 } from 'lucide-svelte';
-  import { Separator } from "@/components/ui/separator";
-  import { generateCompressedNovelUrl } from "./utils/generate-compressed-novel-url";
-  import { toast } from "svelte-sonner";
-  import * as ContextMenu from "$lib/components/ui/context-menu";
-  import { page } from "$app/stores";
-  import { generateSearchParamsToText } from "./utils/generate-search-params-to-text";
+import Textarea from "$lib/components/ui/textarea/textarea.svelte";
+import { parseNarouNovel } from "@l4ph/web-novel-parser";
+import { shortcut } from "@svelte-put/shortcut";
+import { insertRubyToTextarea } from "./utils/insert-ruby-to-textarea";
+import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea";
+import * as Dialog from "$lib/components/ui/dialog";
+import Button from "@/components/ui/button/button.svelte";
+import {
+	persist,
+	type PersistentStore,
+	createLocalStorage,
+} from "@macfja/svelte-persistent-store";
+import { writable } from "svelte/store";
+import CodeMirror from "svelte-codemirror-editor";
+import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
+import { readTextFileOnBrowser } from "./utils/read-text-file-on-browser";
+import { FilePen } from "lucide-svelte";
+import { FilePlus2 } from "lucide-svelte";
+import { Separator } from "@/components/ui/separator";
+import { generateCompressedNovelUrl } from "./utils/generate-compressed-novel-url";
+import { toast } from "svelte-sonner";
+import * as ContextMenu from "$lib/components/ui/context-menu";
+import { page } from "$app/stores";
+import { generateSearchParamsToText } from "./utils/generate-search-params-to-text";
+import { isTauriApp } from "./utils/is-tauri-app";
+import { open as openDialog } from "@tauri-apps/plugin-dialog";
+import { listen } from "@tauri-apps/api/event";
+import { readTextFileOnTauri } from "./utils/read-text-file-on-tauri";
 
-  let inputText:PersistentStore<string> = persist(writable(""), createLocalStorage(), "inputText")
-  let preview: string = "";
-  let textarea: Textarea;
-  let open:boolean = true;
-  let fileInput: HTMLInputElement;
+let inputText: PersistentStore<string> = persist(
+	writable(""),
+	createLocalStorage(),
+	"inputText",
+);
+let preview: string = "";
+let textarea: Textarea;
+let open: boolean = true;
+let fileInput: HTMLInputElement;
 
-  let urlSearchParams = $page.url.searchParams;
-  if(urlSearchParams) {
-    const result = generateSearchParamsToText(urlSearchParams);
-    if(result) {
-      inputText.set(result)
-    }
-  }
+let urlSearchParams = $page.url.searchParams;
+if (urlSearchParams) {
+	const result = generateSearchParamsToText(urlSearchParams);
+	if (result) {
+		inputText.set(result);
+	}
+}
 
-  function handleFileChange(event: Event) {
-    readTextFile(event, (text: string) => {
-      inputText.set(text);
-    });
-  }
+function handleFileChange(event: Event) {
+	readTextFileOnBrowser(event, (text: string) => {
+		inputText.set(text);
+	});
+}
 
-  function CopyUrlToClipboard(inputText: string) {
-    const url = generateCompressedNovelUrl(inputText);
-    navigator.clipboard.writeText(url);
-  }
-  
-  $: preview = parseNarouNovel($inputText);
+function CopyUrlToClipboard(inputText: string) {
+	const url = generateCompressedNovelUrl(inputText);
+	navigator.clipboard.writeText(url);
+}
+
+$: preview = parseNarouNovel($inputText);
+
+if (isTauriApp()) {
+	listen("open_file", async () => {
+		try {
+			const filePath = await openDialog({
+				multiple: false,
+				directory: false,
+				filters: [
+					{
+						name: "",
+						extensions: ["txt"],
+					},
+				],
+			});
+			readTextFileOnTauri(filePath);
+		} catch (error) {
+			console.error("エラーが発生しました:", error);
+		}
+	});
+}
 </script>
 
 <svelte:window
@@ -83,11 +115,13 @@
           </Dialog.Description>
         </Dialog.Header>
         <Button on:click={() => open = false}><FilePlus2 class="mr-2" />新しく書く</Button>
-        <Button on:click={() => fileInput.click()}>
-          <FilePen class="mr-2" />
-          ファイルを開く
-          <input type="file" accept=".txt" class="hidden" bind:this={fileInput} on:change={handleFileChange} />
-        </Button>
+        {#if !isTauriApp()}
+          <Button on:click={() => fileInput.click()}>
+            <FilePen class="mr-2" />
+            ファイルを開く
+            <input type="file" accept=".txt" class="hidden" bind:this={fileInput} on:change={handleFileChange} />
+          </Button>
+        {/if}
       </Dialog.Content>
     </Dialog.Root>
   {/if}

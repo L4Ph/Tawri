@@ -1,0 +1,73 @@
+name: 'publish'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest' # for Arm based macs (M1 and above).
+            args: '--target aarch64-apple-darwin'
+          - platform: 'macos-latest' # for Intel based macs.
+            args: '--target x86_64-apple-darwin'
+          - platform: 'ubuntu-22.04' # for Tauri v1 you could replace this with ubuntu-20.04.
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt update
+          sudo apt install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: install frontend dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Get current date
+        env:
+          TZ: 'Asia/Tokyo'
+        id: date
+        run: echo "RELEASE_DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+
+      - name: Fetch existing tags
+        run: |
+          gh auth setup-git
+          TAGS=$(gh release list --limit 100 | grep -E "^${{ env.RELEASE_DATE }}([.][0-9]+)?$" | awk '{print $1}')
+          if [ -z "$TAGS" ]; then
+            PATCH=0
+          else
+            PATCH=$(echo "$TAGS" | sed 's/.*\.//' | sort -nr | head -n1)
+            PATCH=$((PATCH + 1))
+          fi
+          echo "RELEASE_TAG=${{ env.RELEASE_DATE }}.${PATCH}" >> $GITHUB_ENV
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ env.RELEASE_TAG }}
+          releaseName: 'Version: ${{ env.RELEASE_TAG }}'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}

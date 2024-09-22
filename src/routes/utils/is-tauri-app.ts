@@ -1,4 +1,4 @@
 export function isTauriApp(): boolean {
-    // @ts-ignore
-    return typeof window !== 'undefined' && !!window.__TAURI_INTERNALS__;
+	// @ts-ignore
+	return typeof window !== "undefined" && !!window.__TAURI_INTERNALS__;
 }

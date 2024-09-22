@@ -11,6 +11,7 @@ fn greet(name: &str) -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let open_file = MenuItemBuilder::with_id("open_file", "開く").build(app)?;
@@ -28,15 +29,15 @@ pub fn run() {
                 let window = window_tuple.1;
                 match event.id().0.as_str() {
                     "open_file" => {
-                        window.emit("open_file", "").unwrap();
+                        let _ = window.emit("open_file", "");
                     }
 
                     "save_file" => {
-                        window.emit("save_file", "").unwrap();
+                        let _ = window.emit("save_file", "");
                     }
 
                     "save_as" => {
-                        window.emit("save_as", "").unwrap();
+                        let _ = window.emit("save_as", "");
                     }
                     _ => {}
                 }

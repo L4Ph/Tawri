@@ -1,88 +1,86 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
-  :root  {
-    --background: 194 0% 95%;
-    --foreground: 194 0% 0%;
-    --card: 194 0% 90%;
-    --card-foreground: 194 0% 10%;
-    --popover: 194 0% 95%;
-    --popover-foreground: 194 95% 0%;
-    --primary: 194 54.5% 61.2%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 194 10% 70%;
-    --secondary-foreground: 0 0% 0%;
-    --muted: 156 10% 85%;
-    --muted-foreground: 194 0% 35%;
-    --accent: 156 10% 80%;
-    --accent-foreground: 194 0% 10%;
-    --destructive: 0 50% 30%;
-    --destructive-foreground: 194 0% 90%;
-    --border: 194 20% 50%;
-    --input: 194 20% 18%;
-    --ring: 194 54.5% 61.2%;
-    --radius: 0.75rem;
-  }
-  .dark  {
-    --background: 194 10% 5%;
-    --foreground: 194 0% 90%;
-    --card: 194 0% 0%;
-    --card-foreground: 194 0% 90%;
-    --popover: 194 10% 5%;
-    --popover-foreground: 194 0% 90%;
-    --primary: 194 54.5% 61.2%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 194 10% 10%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 156 10% 15%;
-    --muted-foreground: 194 0% 60%;
-    --accent: 156 10% 15%;
-    --accent-foreground: 194 0% 90%;
-    --destructive: 0 50% 30%;
-    --destructive-foreground: 194 0% 90%;
-    --border: 194 20% 18%;
-    --input: 194 20% 18%;
-    --ring: 194 54.5% 61.2%;
-    --radius: 0.75rem;
-  }  
+	:root {
+		--background: 194 0% 95%;
+		--foreground: 194 0% 0%;
+		--card: 194 0% 90%;
+		--card-foreground: 194 0% 10%;
+		--popover: 194 0% 95%;
+		--popover-foreground: 194 95% 0%;
+		--primary: 194 54.5% 61.2%;
+		--primary-foreground: 0 0% 0%;
+		--secondary: 194 10% 70%;
+		--secondary-foreground: 0 0% 0%;
+		--muted: 156 10% 85%;
+		--muted-foreground: 194 0% 35%;
+		--accent: 156 10% 80%;
+		--accent-foreground: 194 0% 10%;
+		--destructive: 0 50% 30%;
+		--destructive-foreground: 194 0% 90%;
+		--border: 194 20% 50%;
+		--input: 194 20% 18%;
+		--ring: 194 54.5% 61.2%;
+		--radius: 0.75rem;
+	}
+	.dark {
+		--background: 194 10% 5%;
+		--foreground: 194 0% 90%;
+		--card: 194 0% 0%;
+		--card-foreground: 194 0% 90%;
+		--popover: 194 10% 5%;
+		--popover-foreground: 194 0% 90%;
+		--primary: 194 54.5% 61.2%;
+		--primary-foreground: 0 0% 0%;
+		--secondary: 194 10% 10%;
+		--secondary-foreground: 0 0% 100%;
+		--muted: 156 10% 15%;
+		--muted-foreground: 194 0% 60%;
+		--accent: 156 10% 15%;
+		--accent-foreground: 194 0% 90%;
+		--destructive: 0 50% 30%;
+		--destructive-foreground: 194 0% 90%;
+		--border: 194 20% 18%;
+		--input: 194 20% 18%;
+		--ring: 194 54.5% 61.2%;
+		--radius: 0.75rem;
+	}
 }
- 
+
 @layer base {
- * {
-  @apply border-border;
- }
- body {
-  @apply bg-background text-foreground;
-  font-feature-settings:
-   "rlig" 1,
-   "calt" 1;
- }
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+		font-feature-settings: "rlig" 1, "calt" 1;
+	}
 }
 
 @layer utilities {
-  .hidden-scrollbar {
-    -ms-overflow-style: none; /* IE, Edge 対応 */
-    scrollbar-width: none; /* Firefox 対応 */
-  }
-  .hidden-scrollbar::-webkit-scrollbar {
-    /* Chrome, Safari 対応 */
-    display: none;
-  }
+	.hidden-scrollbar {
+		-ms-overflow-style: none; /* IE, Edge 対応 */
+		scrollbar-width: none; /* Firefox 対応 */
+	}
+	.hidden-scrollbar::-webkit-scrollbar {
+		/* Chrome, Safari 対応 */
+		display: none;
+	}
 }
 
 @layer utilities {
-  .kbd-key {
-    display: inline-block;
-    margin: 0 0.2em;
-    padding: 0.4em 0.6em; 
-    background-color: #e0e0e0;
-    border-bottom: 3px solid #b4b4b4;
-    border-radius: 3px;
-    vertical-align: middle;
-    font-size: 0.9em;
-    line-height: 1.1;
-    box-shadow: 0 1px 2px rgba(0,0,0,.1); 
-  }
+	.kbd-key {
+		display: inline-block;
+		margin: 0 0.2em;
+		padding: 0.4em 0.6em;
+		background-color: #e0e0e0;
+		border-bottom: 3px solid #b4b4b4;
+		border-radius: 3px;
+		vertical-align: middle;
+		font-size: 0.9em;
+		line-height: 1.1;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	}
 }
