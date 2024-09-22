@@ -33,9 +33,9 @@ let inputText: PersistentStore<string> = persist(
 	createLocalStorage(),
 	"inputText",
 );
-let preview: string = "";
+let preview = "";
 let textarea: Textarea;
-let open: boolean = true;
+let open = true;
 let fileInput: HTMLInputElement;
 
 let urlSearchParams = $page.url.searchParams;
@@ -104,7 +104,7 @@ if (isTauriApp()) {
 />
 
 <main class="h-screen">
-  {#if $inputText === "" || !inputText}
+  {#if ($inputText === "" || !inputText) && !isTauriApp() }
     <Dialog.Root bind:open>
       <Dialog.Content>
         <Dialog.Header>
@@ -115,13 +115,11 @@ if (isTauriApp()) {
           </Dialog.Description>
         </Dialog.Header>
         <Button on:click={() => open = false}><FilePlus2 class="mr-2" />新しく書く</Button>
-        {#if !isTauriApp()}
-          <Button on:click={() => fileInput.click()}>
-            <FilePen class="mr-2" />
-            ファイルを開く
-            <input type="file" accept=".txt" class="hidden" bind:this={fileInput} on:change={handleFileChange} />
-          </Button>
-        {/if}
+        <Button on:click={() => fileInput.click()}>
+          <FilePen class="mr-2" />
+          ファイルを開く
+          <input type="file" accept=".txt" class="hidden" bind:this={fileInput} on:change={handleFileChange} />
+        </Button>
       </Dialog.Content>
     </Dialog.Root>
   {/if}

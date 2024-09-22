@@ -9,15 +9,13 @@ export function insertRubyToTextarea(
 		return null;
 	}
 	const selectionStart: number =
-		(textarea as HTMLTextAreaElement).selectionStart ?? undefined;
+		(textarea as unknown as HTMLTextAreaElement).selectionStart ?? undefined;
 	const selectionEnd: number =
-		(textarea as HTMLTextAreaElement).selectionEnd ?? undefined;
+		(textarea as unknown as HTMLTextAreaElement).selectionEnd ?? undefined;
 
 	if (selectionStart === undefined || selectionEnd === undefined) {
-		return null; // 何かしらの対応をここで追加
+		return null;
 	}
 
-	return (
-		inputText.slice(0, selectionStart) + "|《》" + inputText.slice(selectionEnd)
-	);
+	return `${inputText.slice(0, selectionStart)}|《》${inputText.slice(selectionEnd)}`;
 }
