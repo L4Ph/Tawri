@@ -28,7 +28,7 @@ let inputText = $state("");
 let textarea: Textarea;
 let open = $state(true);
 let fileInput = $state<HTMLInputElement | null>(null);
-let textFilePath = $state("");
+let textFilePath = $state<string>("");
 let preview = $derived.by(() => {
 	const parsedHtml = parseNarouNovel(inputText);
 	return parsedHtml;
@@ -72,6 +72,7 @@ if (isTauriApp()) {
 			const text = await readTextFileOnTauri(filePath);
 			if (text !== undefined) {
 				inputText = text;
+				toast.success("ファイルを正常に読み込みました。");
 			}
 		} catch (error) {
 			console.error("エラーが発生しました:", error);
@@ -81,8 +82,10 @@ if (isTauriApp()) {
 	listen("save_file", async () => {
 		try {
 			writeTextFileOnTauri(textFilePath, inputText);
+			toast.success("ファイルが正常に保存されました。");
 		} catch (error) {
-			console.error("エラーが発生しました:", error);
+			console.error("ファイル保存中にエラーが発生しました:", error);
+			toast.error("ファイルの保存に失敗しました。");
 		}
 	});
 }
@@ -154,8 +157,13 @@ if (isTauriApp()) {
           {@html preview}
         </ContextMenu.Trigger>
         <ContextMenu.Content>
-          <ContextMenu.Item onclick={() => {CopyUrlToClipboard(inputText)} }>URLをコピー</ContextMenu.Item>
-          <ContextMenu.Item onclick={() => {toast("未実装です。")} }>小説本文をコピー</ContextMenu.Item>
+          {#if !isTauriApp()}
+            <ContextMenu.Item onclick={() => {CopyUrlToClipboard(inputText)} }>URLをコピー</ContextMenu.Item>
+          {/if}
+          <ContextMenu.Item onclick={() => {
+            // TODO: 小説本文のコピー機能を実装する
+            toast("小説本文のコピー機能は現在開発中です。");
+            } }>小説本文をコピー</ContextMenu.Item>
           <ContextMenu.Label>
             ルビを振る
             <ContextMenu.Shortcut>
