@@ -10,12 +10,7 @@ export async function readTextFileOnTauri(
 
 	try {
 		const text = await readTextFile(filePath);
-
-		if (text !== undefined) {
-			return text;
-		}
-		console.log("テキストが空または取得できませんでした");
-		return undefined;
+		return text;
 	} catch (error) {
 		console.error(
 			`ファイル '${filePath}' の読み込み中にエラーが発生しました:`,
