@@ -9,6 +9,7 @@
     "core:default",
     "shell:allow-open",
     "fs:default",
+    "fs:allow-write-text-file",
     "dialog:default"
   ]
 }

@@ -1,12 +1,21 @@
 import { readTextFile } from "@tauri-apps/plugin-fs";
 
-export function readTextFileOnTauri(filePath: string | null) {
-	if (filePath && typeof filePath === "string") {
-		console.log("選択されたファイルのパス:", filePath);
-		const text = readTextFile(filePath);
-		console.log("ファイルの内容:", text);
-		// inputText.set(text)
-	} else {
+export async function readTextFileOnTauri(
+	filePath: string | null,
+): Promise<string | undefined> {
+	if (!filePath || typeof filePath !== "string") {
 		console.log("ファイルが選択されませんでした");
+		return undefined;
+	}
+
+	try {
+		const text = await readTextFile(filePath);
+		return text;
+	} catch (error) {
+		console.error(
+			`ファイル '${filePath}' の読み込み中にエラーが発生しました:`,
+			error,
+		);
+		return undefined;
 	}
 }
