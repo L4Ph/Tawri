@@ -12,6 +12,7 @@
 			".svelte-kit",
 			"build",
 			"src/lib/components/ui/**",
+			"src/lib/utils.ts",
 			"src-tauri/**"
 		]
 	},
