@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap : https://tawri.l4ph.moe/sitemap.xml
