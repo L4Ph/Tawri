@@ -88,6 +88,15 @@ if (isTauriApp()) {
 			toast.error("ファイルの保存に失敗しました。");
 		}
 	});
+
+	listen("save_as", async () => {
+		try {
+			toast.info(`"名前を付けて保存"機能は現在開発中です。`);
+		} catch (error) {
+			console.error("ファイル保存中にエラーが発生しました:", error);
+			toast.error("ファイルの保存に失敗しました。");
+		}
+	});
 }
 </script>
 
@@ -162,7 +171,7 @@ if (isTauriApp()) {
           {/if}
           <ContextMenu.Item onclick={() => {
             // TODO: 小説本文のコピー機能を実装する
-            toast("小説本文のコピー機能は現在開発中です。");
+            toast.info(`"小説本文をコピー"機能は現在開発中です。`);
             } }>小説本文をコピー</ContextMenu.Item>
           <ContextMenu.Label>
             ルビを振る
