@@ -32,9 +32,4 @@ export default defineConfig(async () => ({
 			ignored: ["**/src-tauri/**"],
 		},
 	},
-	resolve: {
-		alias: {
-			$lib: fileURLToPath(new URL("./src/lib", import.meta.url)),
-		},
-	},
 }));

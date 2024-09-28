@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - name: install deps
-        run: rm -rf node_modules && bun install --ignore-scripts --frozen-lockfile
+        run: rm -rf node_modules && bun install --frozen-lockfile
       - name: build
         run: bun run build
       - name: deploy
