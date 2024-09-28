@@ -1,8 +1,13 @@
 import { page } from "$app/stores";
-import { compressToEncodedURIComponent } from "lz-string";
+import { compressToEncodedURIComponent } from "./compression";
 import { get } from "svelte/store";
 
-export function generateCompressedNovelUrl(text: string): string {
-	const compressedText = compressToEncodedURIComponent(text);
-	return `${get(page).url.origin}?novel=${compressedText}`;
+export async function generateCompressedNovelUrl(
+	text: string,
+): Promise<string> {
+	const compressedText = await compressToEncodedURIComponent(text);
+	console.log(compressedText);
+	const url = `${get(page).url.origin}?novel=${compressedText}`;
+	console.log(url);
+	return url;
 }
