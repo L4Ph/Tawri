@@ -36,10 +36,9 @@ let preview = $derived.by(() => {
 
 let urlSearchParams = $page.url.searchParams;
 if (urlSearchParams) {
-	const result = generateSearchParamsToText(urlSearchParams);
-	if (result) {
+	generateSearchParamsToText(urlSearchParams).then((result) => {
 		inputText = result;
-	}
+	});
 }
 
 function handleFileChange(event: Event) {
@@ -49,8 +48,9 @@ function handleFileChange(event: Event) {
 }
 
 function CopyUrlToClipboard(inputText: string) {
-	const url = generateCompressedNovelUrl(inputText);
-	navigator.clipboard.writeText(url);
+	generateCompressedNovelUrl(inputText).then((url) => {
+		navigator.clipboard.writeText(url);
+	});
 }
 
 if (isTauriApp()) {

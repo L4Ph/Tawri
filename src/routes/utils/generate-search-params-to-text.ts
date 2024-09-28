@@ -1,12 +1,13 @@
-import { decompressFromEncodedURIComponent } from "lz-string";
+import { decompressFromEncodedURIComponent } from "./compression";
 
-export function generateSearchParamsToText(
+export async function generateSearchParamsToText(
 	urlSearchParams: URLSearchParams,
-): string | null {
+): Promise<string> {
 	const compressedText = urlSearchParams.get("novel");
-	if (!compressedText) return null; // undefinedの代わりにnullを返す
+	if (!compressedText) {
+		return "";
+	}
 
-	const result: string = decompressFromEncodedURIComponent(compressedText);
-
-	return result || null;
+	const result = decompressFromEncodedURIComponent(compressedText);
+	return result ?? ""; // resultがnullの場合は空文字を返す
 }
