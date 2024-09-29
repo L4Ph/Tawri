@@ -1,14 +1,15 @@
 import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
-// @ts-ignore
-import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
+import process from "node:process";
 
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
-export default defineConfig(async () => ({
+export default defineConfig(
+	{
 	exclude: ["svelte-codemirror-editor", "codemirror"],
+	// @ts-ignore Temporarily disabled because it is running.
 	plugins: [tailwindcss(), sveltekit()],
 
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
@@ -32,4 +33,4 @@ export default defineConfig(async () => ({
 			ignored: ["**/src-tauri/**"],
 		},
 	},
-}));
+});

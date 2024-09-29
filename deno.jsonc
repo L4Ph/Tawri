@@ -1,0 +1,25 @@
+{
+	"tasks": {
+		"dev": "deno run -A npm:vite",
+		"build": "deno run -A npm:vite build",
+		"preview": "deno run -A npm:vite preview",
+		"deploy": "bun run build && deno run -A npm:wrangler pages deploy",
+		"check": "deno run -A npm:svelte-kit sync && deno run -A npm:svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "deno run -A npm:svelte-kit sync && deno run -A npm:svelte-check --tsconfig ./tsconfig.json --watch",
+		"tauri": "deno run -A tauri",
+		"lint": "deno run -A npm:@biomejs/biome lint --write",
+		"format": "deno run -A npm:@biomejs/biome format --write",
+		"bump": "deno run -A tauri-version patch"
+	},
+	"imports": {
+		"@l4ph/web-novel-parser": "jsr:@l4ph/web-novel-parser"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "strict": true
+  }
+}
