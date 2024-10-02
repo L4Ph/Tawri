@@ -8,7 +8,10 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+			precompress: true,
+			strict: true,
+		}),
 		alias: {
 			"@/*": "./src/lib/*",
 		},
