@@ -1,22 +1,20 @@
 <script lang="ts">
-import Textarea from "$lib/components/ui/textarea/textarea.svelte";
+import { Textarea } from "$lib/components/ui/textarea/index.js";
 import { parseNarouNovel } from "@l4ph/web-novel-parser";
 import { shortcut } from "@svelte-put/shortcut";
 import { insertRubyToTextarea } from "./utils/insert-ruby-to-textarea";
 import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea";
-import * as Dialog from "$lib/components/ui/dialog";
-import Button from "@/components/ui/button/button.svelte";
-import { writable } from "svelte/store";
-import CodeMirror from "svelte-codemirror-editor";
-import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
+import * as Dialog from "$lib/components/ui/dialog/index.js";
+import { Button } from "$lib/components/ui/button/index.js";
+import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 import { readTextFileOnBrowser } from "./utils/read-text-file-on-browser";
 import { FilePen } from "lucide-svelte";
 import { FilePlus2 } from "lucide-svelte";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "$lib/components/ui/separator/index.js";
 import { generateCompressedNovelUrl } from "./utils/generate-compressed-novel-url";
 import { toast } from "svelte-sonner";
-import * as ContextMenu from "$lib/components/ui/context-menu";
-import { page } from "$app/stores";
+import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
+import { page } from "$app/state";
 import { generateSearchParamsToText } from "./utils/generate-search-params-to-text";
 import { isTauriApp } from "./utils/is-tauri-app";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
@@ -25,7 +23,7 @@ import { readTextFileOnTauri } from "./utils/read-text-file-on-tauri";
 import { writeTextFileOnTauri } from "./utils/write-text-file-on-tauri";
 
 let inputText = $state("");
-let textarea: Textarea;
+let textarea!: Textarea;
 let open = $state(true);
 let fileInput = $state<HTMLInputElement | null>(null);
 let textFilePath = $state<string>("");
@@ -34,7 +32,7 @@ let preview = $derived.by(() => {
 	return parsedHtml;
 });
 
-let urlSearchParams = $page.url.searchParams;
+let urlSearchParams = page.url.searchParams;
 if (urlSearchParams) {
 	generateSearchParamsToText(urlSearchParams).then((result) => {
 		inputText = result;
@@ -123,7 +121,7 @@ if (isTauriApp()) {
   }}
 />
 
-<main class="h-screen">
+<main class="container h-screen">
   {#if (inputText === "" || !inputText) && !isTauriApp() }
     <Dialog.Root bind:open>
       <Dialog.Content>
@@ -146,17 +144,7 @@ if (isTauriApp()) {
   <div class="flex h-full bg-background">
     <div class="w-1/2 p-4 flex flex-col">
       <ScrollArea>
-        <CodeMirror
-          bind:value={inputText} 
-          styles={{
-            "&": {
-              width: "100%",
-              height: "100%",
-              resize: "none"
-            }
-          }}
-          nodebounce
-        />
+        <Textarea />
       </ScrollArea>
     </div>
     <Separator orientation="vertical" />
@@ -173,18 +161,18 @@ if (isTauriApp()) {
             // TODO: 小説本文のコピー機能を実装する
             toast.info(`"小説本文をコピー"機能は現在開発中です。`);
             } }>小説本文をコピー</ContextMenu.Item>
-          <ContextMenu.Label>
+          <ContextMenu.Item>
             ルビを振る
             <ContextMenu.Shortcut>
               <kbd class="kbd-key">Ctrl</kbd><kbd class="kbd-key">i</kbd>
             </ContextMenu.Shortcut>
-          </ContextMenu.Label>
-          <ContextMenu.Label>
+          </ContextMenu.Item>
+          <ContextMenu.Item>
             傍点を振る
             <ContextMenu.Shortcut>
               <kbd class="kbd-key">Ctrl</kbd><kbd class="kbd-key">b</kbd>
             </ContextMenu.Shortcut>
-          </ContextMenu.Label>
+          </ContextMenu.Item>
         </ContextMenu.Content>
       </ContextMenu.Root>
     </div>
