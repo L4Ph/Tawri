@@ -121,7 +121,7 @@ if (isTauriApp()) {
   }}
 />
 
-<main class="container h-screen">
+<main class="h-screen">
   {#if (inputText === "" || !inputText) && !isTauriApp()}
     <Dialog.Root bind:open>
       <Dialog.Content>
@@ -142,10 +142,8 @@ if (isTauriApp()) {
     </Dialog.Root>
   {/if}
   <div class="flex h-full bg-background">
-    <div class="w-1/2 p-4 flex flex-col">
-      <ScrollArea>
-        <Textarea />
-      </ScrollArea>
+    <div class="w-1/2 p-2 flex flex-col h-full">
+        <Textarea class="w-full resize-none" rows={500} bind:value={inputText} bind:this={textarea} spellcheck="true" />
     </div>
     <Separator orientation="vertical" />
     <div class="w-1/2 h-full p-4 overflow-auto hidden-scrollbar">
