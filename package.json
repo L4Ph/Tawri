@@ -1,5 +1,5 @@
 {
-	"name": "narrow",
+	"name": "tawri",
 	"version": "0.1.1",
 	"description": "",
 	"type": "module",
@@ -13,7 +13,7 @@
 		"tauri": "tauri",
 		"lint": "biome lint",
 		"format": "biome format --write",
-		"bump": "bunx tauri-version patch"
+		"version": "bun run version.ts"
 	},
 	"license": "MIT",
 	"dependencies": {
@@ -43,8 +43,10 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@types/bun": "latest",
 		"@types/node": "^22.10.2",
+		"@types/semver": "^7.5.8",
 		"autoprefixer": "^10.4.20",
 		"postcss": "^8.4.49",
+		"semver": "^7.6.3",
 		"svelte": "^5.15.0",
 		"svelte-check": "^4.1.1",
 		"tailwindcss": "^3.4.17",
