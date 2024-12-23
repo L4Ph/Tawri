@@ -1,3 +1,7 @@
+/**
+ * @see {@link https://github.com/oven-sh/bun/issues/5291#issuecomment-2506719866}
+ */
+
 import { fail } from "node:assert";
 import { $ } from "bun";
 import { type ReleaseType, inc, valid as isValidVersion } from "semver";
