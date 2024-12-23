@@ -23,7 +23,7 @@ import { readTextFileOnTauri } from "./utils/read-text-file-on-tauri";
 import { writeTextFileOnTauri } from "./utils/write-text-file-on-tauri";
 
 let inputText = $state("");
-let textarea!: Textarea;
+let textarea: Textarea;
 let open = $state(true);
 let fileInput = $state<HTMLInputElement | null>(null);
 let textFilePath = $state<string>("");
@@ -122,7 +122,7 @@ if (isTauriApp()) {
 />
 
 <main class="container h-screen">
-  {#if (inputText === "" || !inputText) && !isTauriApp() }
+  {#if (inputText === "" || !inputText) && !isTauriApp()}
     <Dialog.Root bind:open>
       <Dialog.Content>
         <Dialog.Header>
