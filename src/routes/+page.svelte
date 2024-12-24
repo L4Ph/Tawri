@@ -1,19 +1,16 @@
 <script lang="ts">
 import { Textarea } from "$lib/components/ui/textarea/index.js";
-import { parseNarouNovel } from "@l4ph/web-novel-parser";
+import { parseNarouNovel } from "web-novel-parser";
 import { shortcut } from "@svelte-put/shortcut";
 import { insertRubyToTextarea } from "./utils/insert-ruby-to-textarea";
 import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea";
 import * as Dialog from "$lib/components/ui/dialog/index.js";
 import { Button } from "$lib/components/ui/button/index.js";
-import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 import { readTextFileOnBrowser } from "./utils/read-text-file-on-browser";
 import { FilePen } from "lucide-svelte";
 import { FilePlus2 } from "lucide-svelte";
 import { Separator } from "$lib/components/ui/separator/index.js";
-import { generateCompressedNovelUrl } from "./utils/generate-compressed-novel-url";
 import { toast } from "svelte-sonner";
-import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
 import { page } from "$app/state";
 import { generateSearchParamsToText } from "./utils/generate-search-params-to-text";
 import { isTauriApp } from "./utils/is-tauri-app";
@@ -45,57 +42,49 @@ function handleFileChange(event: Event) {
 	});
 }
 
-function CopyUrlToClipboard(inputText: string) {
-	generateCompressedNovelUrl(inputText).then((url) => {
-		navigator.clipboard.writeText(url);
-	});
-}
-
-if (isTauriApp()) {
-	listen("open_file", async () => {
-		try {
-			const filePath = await openDialog({
-				multiple: false,
-				directory: false,
-				filters: [
-					{
-						name: "",
-						extensions: ["txt"],
-					},
-				],
-			});
-			if (filePath) {
-				textFilePath = filePath;
-			}
-			const text = await readTextFileOnTauri(filePath);
-			if (text !== undefined) {
-				inputText = text;
-				toast.success("ファイルを正常に読み込みました。");
-			}
-		} catch (error) {
-			console.error("エラーが発生しました:", error);
+listen("open_file", async () => {
+	try {
+		const filePath = await openDialog({
+			multiple: false,
+			directory: false,
+			filters: [
+				{
+					name: "",
+					extensions: ["txt"],
+				},
+			],
+		});
+		if (filePath) {
+			textFilePath = filePath;
 		}
-	});
-
-	listen("save_file", async () => {
-		try {
-			writeTextFileOnTauri(textFilePath, inputText);
-			toast.success("ファイルが正常に保存されました。");
-		} catch (error) {
-			console.error("ファイル保存中にエラーが発生しました:", error);
-			toast.error("ファイルの保存に失敗しました。");
+		const text = await readTextFileOnTauri(filePath);
+		if (text !== undefined) {
+			inputText = text;
+			toast.success("ファイルを正常に読み込みました。");
 		}
-	});
+	} catch (error) {
+		console.error("エラーが発生しました:", error);
+	}
+});
 
-	listen("save_as", async () => {
-		try {
-			toast.info(`"名前を付けて保存"機能は現在開発中です。`);
-		} catch (error) {
-			console.error("ファイル保存中にエラーが発生しました:", error);
-			toast.error("ファイルの保存に失敗しました。");
-		}
-	});
-}
+listen("save_file", async () => {
+	try {
+		writeTextFileOnTauri(textFilePath, inputText);
+		toast.success("ファイルが正常に保存されました。");
+	} catch (error) {
+		console.error("ファイル保存中にエラーが発生しました:", error);
+		toast.error("ファイルの保存に失敗しました。");
+	}
+});
+
+listen("save_as", async () => {
+	try {
+		toast.info(`"名前を付けて保存"機能は現在開発中です。`);
+	} catch (error) {
+		console.error("ファイル保存中にエラーが発生しました:", error);
+		toast.error("ファイルの保存に失敗しました。");
+	}
+});
 </script>
 
 <svelte:window
@@ -121,8 +110,7 @@ if (isTauriApp()) {
   }}
 />
 
-<main class="h-screen">
-  {#if (inputText === "" || !inputText) && !isTauriApp()}
+  {#if (inputText === "" || !inputText)}
     <Dialog.Root bind:open>
       <Dialog.Content>
         <Dialog.Header>
@@ -141,38 +129,14 @@ if (isTauriApp()) {
       </Dialog.Content>
     </Dialog.Root>
   {/if}
-  <div class="flex h-full bg-background">
-    <div class="w-1/2 p-2 flex flex-col h-full">
-        <Textarea class="w-full resize-none" rows={500} bind:value={inputText} bind:this={textarea} spellcheck="true" />
+<main class="h-svh">
+  <div class="flex-grow flex h-full bg-background">
+    <div class="w-1/2 p-2 flex flex-col">
+        <Textarea class="h-full w-full resize-none" bind:value={inputText} bind:this={textarea} spellcheck="true" />
     </div>
     <Separator orientation="vertical" />
     <div class="w-1/2 h-full p-4 overflow-auto hidden-scrollbar">
-      <ContextMenu.Root>
-        <ContextMenu.Trigger class="h-full">
-          {@html preview}
-        </ContextMenu.Trigger>
-        <ContextMenu.Content>
-          {#if !isTauriApp()}
-            <ContextMenu.Item onclick={() => {CopyUrlToClipboard(inputText)} }>URLをコピー</ContextMenu.Item>
-          {/if}
-          <ContextMenu.Item onclick={() => {
-            // TODO: 小説本文のコピー機能を実装する
-            toast.info(`"小説本文をコピー"機能は現在開発中です。`);
-            } }>小説本文をコピー</ContextMenu.Item>
-          <ContextMenu.Item>
-            ルビを振る
-            <ContextMenu.Shortcut>
-              <kbd class="kbd-key">Ctrl</kbd><kbd class="kbd-key">i</kbd>
-            </ContextMenu.Shortcut>
-          </ContextMenu.Item>
-          <ContextMenu.Item>
-            傍点を振る
-            <ContextMenu.Shortcut>
-              <kbd class="kbd-key">Ctrl</kbd><kbd class="kbd-key">b</kbd>
-            </ContextMenu.Shortcut>
-          </ContextMenu.Item>
-        </ContextMenu.Content>
-      </ContextMenu.Root>
+      {@html preview}
     </div>
   </div>
 </main>
