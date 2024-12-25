@@ -6,20 +6,24 @@ import { insertRubyToTextarea } from "./utils/insert-ruby-to-textarea";
 import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea";
 import * as Dialog from "$lib/components/ui/dialog/index.js";
 import { Button } from "$lib/components/ui/button/index.js";
-import { readTextFileOnBrowser } from "./utils/read-text-file-on-browser";
-import { FilePen } from "lucide-svelte";
+import { FilePen, Store } from "lucide-svelte";
 import { FilePlus2 } from "lucide-svelte";
 import { Separator } from "$lib/components/ui/separator/index.js";
 import { toast } from "svelte-sonner";
-import { page } from "$app/state";
-import { generateSearchParamsToText } from "./utils/generate-search-params-to-text";
-import { isTauriApp } from "./utils/is-tauri-app";
-import { open as openDialog } from "@tauri-apps/plugin-dialog";
+import { open as openDialog, save } from "@tauri-apps/plugin-dialog";
 import { listen } from "@tauri-apps/api/event";
 import { readTextFileOnTauri } from "./utils/read-text-file-on-tauri";
 import { writeTextFileOnTauri } from "./utils/write-text-file-on-tauri";
+import { createStorage } from "unstorage";
+import localStorageDriver from "unstorage/drivers/localstorage";
+import { onMount } from "svelte";
+
+const storage = createStorage({
+  driver: localStorageDriver({ base: "tawri:" }),
+});
 
 let inputText = $state("");
+let unsavedText = $derived(inputText)
 let textarea: Textarea;
 let open = $state(true);
 let fileInput = $state<HTMLInputElement | null>(null);
@@ -29,17 +33,41 @@ let preview = $derived.by(() => {
 	return parsedHtml;
 });
 
-let urlSearchParams = page.url.searchParams;
-if (urlSearchParams) {
-	generateSearchParamsToText(urlSearchParams).then((result) => {
-		inputText = result;
-	});
-}
+onMount(async () => {
+  const unsavedText = await storage.getItem("tawri:unsavedText");
+  if (typeof unsavedText === "string" && !inputText) {
+    inputText = unsavedText;
+  }
+});
 
-function handleFileChange(event: Event) {
-	readTextFileOnBrowser(event, (text: string) => {
-		inputText = text;
-	});
+$effect(() =>{
+  storage.setItem("tawri:unsavedText", unsavedText)
+})
+
+
+async function handleFileChange(event: Event) {
+  try {
+		const filePath = await openDialog({
+			multiple: false,
+			directory: false,
+			filters: [
+				{
+					name: "",
+					extensions: ["txt"],
+				},
+			],
+		});
+		if (filePath) {
+			textFilePath = filePath;
+		}
+		const text = await readTextFileOnTauri(filePath);
+		if (text !== undefined) {
+			inputText = text;
+			toast.success("ファイルを正常に読み込みました。");
+		}
+	} catch (error) {
+		console.error("エラーが発生しました:", error);
+	}
 }
 
 listen("open_file", async () => {
