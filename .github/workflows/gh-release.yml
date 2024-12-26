@@ -25,11 +25,8 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-
-      # - name: setup bun
-      #   uses: oven-sh/setup-bun@v2
-      #   with:
-      #     bun-version: latest
+      
+      - run: corepack enable && corepack prepare pnpm@latest-9 --activate
 
       - name: setup node
         uses: actions/setup-node@v4
