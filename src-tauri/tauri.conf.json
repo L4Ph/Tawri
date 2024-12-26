@@ -1,11 +1,11 @@
 {
   "productName": "tawri",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "identifier": "moe.l4ph.tawri",
   "build": {
-    "beforeDevCommand": "bun run dev",
+    "beforeDevCommand": "pnpm run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "bun run build",
+    "beforeBuildCommand": "pnpm run build",
     "frontendDist": "../build"
   },
   "app": {
