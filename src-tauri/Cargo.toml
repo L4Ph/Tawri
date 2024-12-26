@@ -12,13 +12,13 @@ name = "tawri_lib"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-rc", features = [] }
+tauri-build = { version = "2.0.3", features = [] }
 
 [dependencies]
-tauri = { version = "2.0.0-rc", features = [] }
-tauri-plugin-shell = "2.0.0-rc"
+tauri = { version = "2.1.1", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tauri-plugin-fs = "2.0.0-rc"
-tauri-plugin-dialog = "2.0.0-rc"
+tauri-plugin-fs = "2.2.0"
+tauri-plugin-dialog = "2.2.0"
+tauri-plugin-shell = "2"
 
