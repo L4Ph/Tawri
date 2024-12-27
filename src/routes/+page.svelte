@@ -148,8 +148,8 @@ listen("save_as", async () => {
             <p><kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">i</kbd>でルビ / <kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">b</kbd>で傍点が入力できます。</p>
           </Dialog.Description>
         </Dialog.Header>
-        <Button on:click={() => open = false}><FilePlus2 class="mr-2" />新しく書く</Button>
-        <Button on:click={() => fileInput?.click()}>
+        <Button onclick={() => open = false}><FilePlus2 class="mr-2" />新しく書く</Button>
+        <Button onclick={() => fileInput?.click()}>
           <FilePen class="mr-2" />
           ファイルを開く
           <input type="file" accept=".txt" class="hidden" bind:this={fileInput} onchange={handleFileChange} />
