@@ -56,16 +56,37 @@
 {#if href}
 	<a
 		bind:this={ref}
-		class={cn(buttonVariants({ variant, size, className }))}
+		class={cn(
+			buttonVariants(
+				{
+					variant,
+					size,
+					// @ts-ignore
+					className
+					}
+				)
+			)
+		}
 		{href}
 		{...restProps}
 	>
 		{@render children?.()}
 	</a>
 {:else}
+	<!-- @ts-ignore -->
 	<button
 		bind:this={ref}
-		class={cn(buttonVariants({ variant, size, className }))}
+		class={cn(
+			buttonVariants(
+				{
+					variant, 
+					size, 
+					// @ts-ignore
+					className
+					}
+				)
+			)
+		}
 		{type}
 		{...restProps}
 	>
