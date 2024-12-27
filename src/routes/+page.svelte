@@ -17,6 +17,9 @@ import { writeTextFileOnTauri } from "./utils/write-text-file-on-tauri";
 import { createStorage } from "unstorage";
 import localStorageDriver from "unstorage/drivers/localstorage";
 import { onMount } from "svelte";
+import { runUpdater } from "./utils/run-updater";
+
+runUpdater()
 
 const storage = createStorage({
   driver: localStorageDriver({ base: "tawri:" }),
