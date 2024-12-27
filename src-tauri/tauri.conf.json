@@ -1,6 +1,6 @@
 {
   "productName": "tawri",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "identifier": "moe.l4ph.tawri",
   "build": {
     "beforeDevCommand": "pnpm run dev",
@@ -21,6 +21,7 @@
     }
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "targets": "all",
     "icon": [
@@ -30,5 +31,16 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU4M0UzN0FCQTFFOUUzNjgKUldSbzQrbWhxemMrNk1QSkhFSEltaFh3QWdLbUNYVnYzQzBEalphRi9hbVhjYVN2UHFZYll3UU4K",
+      "endpoints": [
+        "https://github.com/L4Ph/Tawri/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }
