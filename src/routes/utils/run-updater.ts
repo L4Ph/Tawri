@@ -1,6 +1,10 @@
 import { check } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
 
+/**
+ * {@link https://v2.tauri.app/plugin/updater/}
+ */
+
 export async function runUpdater() {
     const update = await check();
     if (update) {
