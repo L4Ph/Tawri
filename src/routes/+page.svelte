@@ -6,7 +6,7 @@ import { insertRubyToTextarea } from "./utils/insert-ruby-to-textarea";
 import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea";
 import * as Dialog from "$lib/components/ui/dialog/index.js";
 import { Button } from "$lib/components/ui/button/index.js";
-import { FilePen, Store } from "lucide-svelte";
+import { FilePen } from "lucide-svelte";
 import { FilePlus2 } from "lucide-svelte";
 import { Separator } from "$lib/components/ui/separator/index.js";
 import { toast } from "svelte-sonner";
@@ -19,6 +19,9 @@ import localStorageDriver from "unstorage/drivers/localstorage";
 import { onMount } from "svelte";
 import { runUpdater } from "./utils/run-updater";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { join, resourceDir } from "@tauri-apps/api/path";
+import { load } from "@tauri-apps/plugin-store";
+import { setMode } from "mode-watcher";
 
 runUpdater();
 
@@ -44,8 +47,20 @@ onMount(async () => {
 	}
 });
 
+async function loadConfig() {
+	const configDir = await join(await resourceDir(), "config.json");
+	const store = await load(configDir, { autoSave: false });
+	const theme = await store.get("app-theme");
+	setMode(
+		theme === "dark" || theme === "light" || theme === "system"
+			? theme
+			: "system",
+	);
+}
+
 $effect(() => {
 	storage.setItem("tawri:unsavedText", unsavedText);
+	loadConfig();
 });
 
 async function handleFileChange(event: Event) {

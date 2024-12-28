@@ -3,7 +3,8 @@
   "identifier": "default",
   "description": "Capability for the main window",
   "windows": [
-    "main"
+    "main",
+    "app-settings"
   ],
   "permissions": [
     "core:default",
@@ -19,6 +20,8 @@
     "core:webview:allow-set-webview-size",
     "core:window:allow-create",
     "core:window:default",
-    "core:app:default"
+    "core:app:default",
+    "core:path:default",
+    "store:default"
   ]
 }
