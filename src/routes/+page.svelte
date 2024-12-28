@@ -6,7 +6,7 @@ import { insertRubyToTextarea } from "./utils/insert-ruby-to-textarea";
 import { insertEmphasisToTextarea } from "./utils/insert-emphasis-to-textarea";
 import * as Dialog from "$lib/components/ui/dialog/index.js";
 import { Button } from "$lib/components/ui/button/index.js";
-import { FilePen, Store } from "lucide-svelte";
+import { FilePen } from "lucide-svelte";
 import { FilePlus2 } from "lucide-svelte";
 import { Separator } from "$lib/components/ui/separator/index.js";
 import { toast } from "svelte-sonner";
@@ -18,15 +18,19 @@ import { createStorage } from "unstorage";
 import localStorageDriver from "unstorage/drivers/localstorage";
 import { onMount } from "svelte";
 import { runUpdater } from "./utils/run-updater";
+import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { join, resourceDir } from "@tauri-apps/api/path";
+import { load } from "@tauri-apps/plugin-store";
+import { setMode } from "mode-watcher";
 
-runUpdater()
+runUpdater();
 
 const storage = createStorage({
-  driver: localStorageDriver({ base: "tawri:" }),
+	driver: localStorageDriver({ base: "tawri:" }),
 });
 
 let inputText = $state("");
-let unsavedText = $derived(inputText)
+let unsavedText = $derived(inputText);
 let textarea: Textarea;
 let open = $state(true);
 let fileInput = $state<HTMLInputElement | null>(null);
@@ -37,19 +41,30 @@ let preview = $derived.by(() => {
 });
 
 onMount(async () => {
-  const unsavedText = await storage.getItem("tawri:unsavedText");
-  if (typeof unsavedText === "string" && !inputText) {
-    inputText = unsavedText;
-  }
+	const unsavedText = await storage.getItem("tawri:unsavedText");
+	if (typeof unsavedText === "string" && !inputText) {
+		inputText = unsavedText;
+	}
 });
 
-$effect(() =>{
-  storage.setItem("tawri:unsavedText", unsavedText)
-})
+async function loadConfig() {
+	const configDir = await join(await resourceDir(), "config.json");
+	const store = await load(configDir, { autoSave: false });
+	const theme = await store.get("app-theme");
+	setMode(
+		theme === "dark" || theme === "light" || theme === "system"
+			? theme
+			: "system",
+	);
+}
 
+$effect(() => {
+	storage.setItem("tawri:unsavedText", unsavedText);
+	loadConfig();
+});
 
 async function handleFileChange(event: Event) {
-  try {
+	try {
 		const filePath = await openDialog({
 			multiple: false,
 			directory: false,
@@ -115,6 +130,15 @@ listen("save_as", async () => {
 		console.error("ファイル保存中にエラーが発生しました:", error);
 		toast.error("ファイルの保存に失敗しました。");
 	}
+});
+
+listen("open_settings", async () => {
+	const webview = new WebviewWindow("app-settings", {
+		url: "/settings",
+	});
+	webview.once("tauri://created", () => {
+		console.log("設定画面が開いた。");
+	});
 });
 </script>
 
