@@ -18,8 +18,7 @@ import { createStorage } from "unstorage";
 import localStorageDriver from "unstorage/drivers/localstorage";
 import { onMount } from "svelte";
 import { runUpdater } from "./utils/run-updater";
-import { Window } from "@tauri-apps/api/window";
-import { Webview } from "@tauri-apps/api/webview";
+import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 runUpdater();
 
@@ -119,21 +118,12 @@ listen("save_as", async () => {
 });
 
 listen("open_settings", async () => {
-	try {
-		const appWindow = new Window("app-settings");
-		const webview = new Webview(appWindow, "app-settings", {
-			x: 800,
-			y: 600,
-			width: 600,
-			height: 800,
-			url: "https://github.com/tauri-apps/tauri",
-		});
-		webview.once("tauri://created", () => {
-			// webview successfully created
-		});
-	} catch (error) {
-		toast.error("設定画面が開けませんでした。");
-	}
+	const webview = new WebviewWindow("app-settings", {
+		url: "/settings",
+	});
+	webview.once("tauri://created", () => {
+		console.log("設定画面が開いた。");
+	});
 });
 </script>
 

@@ -32,15 +32,9 @@ importers:
       '@tauri-apps/plugin-updater':
         specifier: ~2.3.0
         version: 2.3.0
-      bits-ui:
-        specifier: 1.0.0-next.74
-        version: 1.0.0-next.74(svelte@5.16.0)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      lucide-svelte:
-        specifier: ^0.469.0
-        version: 0.469.0(svelte@5.16.0)
       lz-string:
         specifier: ^1.5.0
         version: 1.5.0
@@ -99,6 +93,12 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
+      bits-ui:
+        specifier: 1.0.0-next.74
+        version: 1.0.0-next.74(svelte@5.16.0)
+      lucide-svelte:
+        specifier: ^0.469.0
+        version: 0.469.0(svelte@5.16.0)
       postcss:
         specifier: ^8.4.49
         version: 8.4.49

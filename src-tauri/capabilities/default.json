@@ -11,6 +11,14 @@
     "fs:default",
     "fs:allow-write-text-file",
     "dialog:default",
-    "core:webview:allow-create-webview-window"
+    "core:webview:allow-create-webview-window",
+    "core:webview:allow-create-webview",
+    "core:webview:allow-reparent",
+    "core:webview:default",
+    "core:webview:allow-set-webview-position",
+    "core:webview:allow-set-webview-size",
+    "core:window:allow-create",
+    "core:window:default",
+    "core:app:default"
   ]
 }
