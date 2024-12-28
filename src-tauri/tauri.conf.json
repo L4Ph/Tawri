@@ -1,6 +1,6 @@
 {
   "productName": "tawri",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "identifier": "moe.l4ph.tawri",
   "build": {
     "beforeDevCommand": "pnpm run dev",

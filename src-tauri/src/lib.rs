@@ -11,6 +11,7 @@ fn greet(name: &str) -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
@@ -19,8 +20,9 @@ pub fn run() {
             let open_file = MenuItemBuilder::with_id("open_file", "開く").build(app)?;
             let save_file = MenuItemBuilder::with_id("save_file", "保存").build(app)?;
             let save_as = MenuItemBuilder::with_id("save_as", "名前を付けて保存").build(app)?;
+            let open_settings = MenuItemBuilder::with_id("open_settings", "設定").build(app)?;
             let file_menu = SubmenuBuilder::with_id(app, "file_menu", "ファイル")
-                .items(&[&open_file, &save_file, &save_as])
+                .items(&[&open_file, &save_file, &save_as, &open_settings])
                 .build()?;
             let menu = MenuBuilder::new(app).items(&[&file_menu]).build()?;
 
@@ -41,6 +43,11 @@ pub fn run() {
                     "save_as" => {
                         let _ = window.emit("save_as", "");
                     }
+
+                    "open_settings" => {
+                        let _ = window.emit("open_settings", "");
+                    }
+
                     _ => {}
                 }
             });

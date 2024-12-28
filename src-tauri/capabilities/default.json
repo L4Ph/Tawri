@@ -10,6 +10,7 @@
     "shell:allow-open",
     "fs:default",
     "fs:allow-write-text-file",
-    "dialog:default"
+    "dialog:default",
+    "core:webview:allow-create-webview-window"
   ]
 }

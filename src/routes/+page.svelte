@@ -18,15 +18,17 @@ import { createStorage } from "unstorage";
 import localStorageDriver from "unstorage/drivers/localstorage";
 import { onMount } from "svelte";
 import { runUpdater } from "./utils/run-updater";
+import { Window } from "@tauri-apps/api/window";
+import { Webview } from "@tauri-apps/api/webview";
 
-runUpdater()
+runUpdater();
 
 const storage = createStorage({
-  driver: localStorageDriver({ base: "tawri:" }),
+	driver: localStorageDriver({ base: "tawri:" }),
 });
 
 let inputText = $state("");
-let unsavedText = $derived(inputText)
+let unsavedText = $derived(inputText);
 let textarea: Textarea;
 let open = $state(true);
 let fileInput = $state<HTMLInputElement | null>(null);
@@ -37,19 +39,18 @@ let preview = $derived.by(() => {
 });
 
 onMount(async () => {
-  const unsavedText = await storage.getItem("tawri:unsavedText");
-  if (typeof unsavedText === "string" && !inputText) {
-    inputText = unsavedText;
-  }
+	const unsavedText = await storage.getItem("tawri:unsavedText");
+	if (typeof unsavedText === "string" && !inputText) {
+		inputText = unsavedText;
+	}
 });
 
-$effect(() =>{
-  storage.setItem("tawri:unsavedText", unsavedText)
-})
-
+$effect(() => {
+	storage.setItem("tawri:unsavedText", unsavedText);
+});
 
 async function handleFileChange(event: Event) {
-  try {
+	try {
 		const filePath = await openDialog({
 			multiple: false,
 			directory: false,
@@ -114,6 +115,24 @@ listen("save_as", async () => {
 	} catch (error) {
 		console.error("ファイル保存中にエラーが発生しました:", error);
 		toast.error("ファイルの保存に失敗しました。");
+	}
+});
+
+listen("open_settings", async () => {
+	try {
+		const appWindow = new Window("app-settings");
+		const webview = new Webview(appWindow, "app-settings", {
+			x: 800,
+			y: 600,
+			width: 600,
+			height: 800,
+			url: "https://github.com/tauri-apps/tauri",
+		});
+		webview.once("tauri://created", () => {
+			// webview successfully created
+		});
+	} catch (error) {
+		toast.error("設定画面が開けませんでした。");
 	}
 });
 </script>
